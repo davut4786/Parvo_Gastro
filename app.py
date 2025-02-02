@@ -21,6 +21,24 @@ with open("gastroparvo_model.pkl", "rb") as f:
 st.markdown("<h1 style='text-align: center;'>Hastalık Tahmin Uygulaması</h1>", unsafe_allow_html=True)
 
 # --------------------------
+# Temizle Butonu
+# --------------------------
+if st.button("Temizle"):
+    # Tüm session_state anahtarlarını temizleyelim
+    state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
+    state.categorical_inputs = {
+        "halsizlik": False,
+        "ishal": False,
+        "istahsizlik": False,
+        "kusma": False,
+        "zayiflama": False,
+        "AnimalType_kedi": 0,
+        "AnimalType_kopek": 0,
+    }
+    st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
+    st.experimental_rerun()
+
+# --------------------------
 # Girdi Alanları İçin Ayarlar
 # --------------------------
 # Eğitimde kullandığınız sayısal sütunlar (float64 türündeki sütunlar)
@@ -103,21 +121,3 @@ if st.button("Tahmin Et"):
             st.markdown(f"<h2 style='text-align: center;'>Tahmin Sonucu: {result_text}</h2>", unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Bir hata oluştu: {str(e)}")
-
-# --------------------------
-# Temizle Butonu
-# --------------------------
-if st.button("Temizle"):
-    # Tüm session_state anahtarlarını temizleyelim
-    state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
-    state.categorical_inputs = {
-        "halsizlik": False,
-        "ishal": False,
-        "istahsizlik": False,
-        "kusma": False,
-        "zayiflama": False,
-        "AnimalType_kedi": 0,
-        "AnimalType_kopek": 0,
-    }
-    st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
-    st.experimental_rerun()
