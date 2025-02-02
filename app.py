@@ -3,7 +3,7 @@ import pickle
 import pandas as pd
 
 # --------------------------
-# Özel Tema Ayarları
+# Özel Tema Ayarları - İlk Satırda
 # --------------------------
 st.set_page_config(
     page_title="Hastalık Tahmin Uygulaması",
