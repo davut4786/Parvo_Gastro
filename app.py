@@ -86,8 +86,15 @@ if st.button("Tahmin Et"):
 # Temizle butonu
 if st.button("Temizle"):
     # Tüm girişleri sıfırla
-    for key in st.session_state.numeric_inputs:
-        st.session_state.numeric_inputs[key] = None
-    for key in st.session_state.categorical_inputs:
-        st.session_state.categorical_inputs[key] = False
+    st.session_state.numeric_inputs = {col: None for col in columns}
+    st.session_state.categorical_inputs = {
+        "halsizlik": False,
+        "ishal": False,
+        "istahsizlik": False,
+        "kusma": False,
+        "zayiflama": False,
+        "AnimalType_kedi": 0,
+        "AnimalType_kopek": 0,
+    }
+    # Sayfayı sıfırlama
     st.experimental_rerun()
