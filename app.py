@@ -16,25 +16,29 @@ columns = ["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "
 
 # Sayısal değişkenleri alma
 numeric_inputs = {}
-col1, col2, col3, col4 = st.columns(4)  # 4 sütun oluşturuluyor
+col1, col2, col3, col4, col5, col6 = st.columns(6)  # 6 sütun oluşturuluyor
 
 # Sayısal verileri her sütuna yerleştir
 for i, col in enumerate(columns):
-    if i % 4 == 0:
+    if i % 6 == 0:
         numeric_inputs[col] = col1.number_input(f"{col}", value=None, format="%.2f")
-    elif i % 4 == 1:
+    elif i % 6 == 1:
         numeric_inputs[col] = col2.number_input(f"{col}", value=None, format="%.2f")
-    elif i % 4 == 2:
+    elif i % 6 == 2:
         numeric_inputs[col] = col3.number_input(f"{col}", value=None, format="%.2f")
-    else:
+    elif i % 6 == 3:
         numeric_inputs[col] = col4.number_input(f"{col}", value=None, format="%.2f")
+    elif i % 6 == 4:
+        numeric_inputs[col] = col5.number_input(f"{col}", value=None, format="%.2f")
+    else:
+        numeric_inputs[col] = col6.number_input(f"{col}", value=None, format="%.2f")
 
 # Klinik Bulgular ve Hayvan Türü için kategorik veriler
 st.markdown("**Klinik Bulgular ve Hayvan Türü**")
 categorical_inputs = {}
 
-# 4 sütunlu düzenleme ile checkbox'lar
-col1, col2, col3, col4 = st.columns(4)
+# 6 sütunlu düzenleme ile checkbox'lar
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik")
 categorical_inputs["ishal"] = col1.checkbox("İshal")
