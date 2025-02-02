@@ -45,8 +45,7 @@ categorical_inputs["ishal"] = col1.checkbox("İshal")
 categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık")
 categorical_inputs["kusma"] = col2.checkbox("Kusma")
 categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama")
-categorical_inputs["AnimalType_kedi"] = col3.checkbox("Kedi")
-categorical_inputs["AnimalType_kopek"] = col4.checkbox("Köpek")
+categorical_inputs["AnimalType_kedi"] = col4.radio("Hayvan Türü", ("Kedi", "Köpek")) == "Kedi"  # Sadece birini seçmesini sağla
 
 # Tahmin butonu
 if st.button("Tahmin Et"):
@@ -54,8 +53,11 @@ if st.button("Tahmin Et"):
     input_data = pd.DataFrame([{**numeric_inputs, **categorical_inputs}])
     
     # Eksik veri kontrolü
-    if input_data.isnull().values.any():
-        st.warning("Lütfen tüm alanları doldurun!")
+    missing_columns = input_data.columns[input_data.isnull().any()].tolist()
+    if missing_columns:
+        # Eksik sütunları kullanıcıya bildir
+        missing_message = "Lütfen şu sütunları doldurun: " + ", ".join(missing_columns)
+        st.warning(missing_message)
     else:
         prediction = model.predict(input_data)[0]
         
