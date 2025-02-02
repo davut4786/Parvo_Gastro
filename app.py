@@ -102,20 +102,3 @@ if st.button("Tahmin Et"):
             st.markdown(f"<h2 style='text-align: center;'>Tahmin Sonucu: {result_text}</h2>", unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Bir hata oluştu: {str(e)}")
-
-# --------------------------
-# Temizle Butonu
-# --------------------------
-if st.button("Temizle"):
-    # Tüm session_state anahtarlarını temizleyelim
-    st.session_state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
-    st.session_state.categorical_inputs = {
-        "halsizlik": False,
-        "ishal": False,
-        "istahsizlik": False,
-        "kusma": False,
-        "zayiflama": False,
-        "AnimalType_kedi": 0,
-        "AnimalType_kopek": 0,
-    }
-    st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
