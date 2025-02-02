@@ -32,7 +32,7 @@ columns = [
 
 # Session state başlangıç değerleri
 if 'numeric_inputs' not in st.session_state:
-    st.session_state.numeric_inputs = {col: 0.0 for col in columns}
+    st.session_state.numeric_inputs = {col: None for col in columns}
 
 if 'categorical_inputs' not in st.session_state:
     st.session_state.categorical_inputs = {
@@ -54,28 +54,28 @@ for i, col in enumerate(columns):
     # Her sütuna yerleştirirken, benzersiz key kullanıyoruz.
     key_val = f"{col}_input"
     if i % 6 == 0:
-        st.session_state.numeric_inputs[col] = col1.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col1.number_input(col, value=None, format="%.2f", key=key_val)
     elif i % 6 == 1:
-        st.session_state.numeric_inputs[col] = col2.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col2.number_input(col, value=None, format="%.2f", key=key_val)
     elif i % 6 == 2:
-        st.session_state.numeric_inputs[col] = col3.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col3.number_input(col, value=None, format="%.2f", key=key_val)
     elif i % 6 == 3:
-        st.session_state.numeric_inputs[col] = col4.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col4.number_input(col, value=None, format="%.2f", key=key_val)
     elif i % 6 == 4:
-        st.session_state.numeric_inputs[col] = col5.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col5.number_input(col, value=None, format="%.2f", key=key_val)
     else:
-        st.session_state.numeric_inputs[col] = col6.number_input(col, value=st.session_state.numeric_inputs[col], format="%.2f", key=key_val)
+        st.session_state.numeric_inputs[col] = col6.number_input(col, value=None, format="%.2f", key=key_val)
 
 # --------------------------
 # Kategorik Girdiler
 # --------------------------
 st.markdown("**Klinik Bulgular ve Hayvan Türü**")
 col1, col2, col3, col4, col5, col6 = st.columns(6)
-st.session_state.categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik", value=st.session_state.categorical_inputs["halsizlik"], key="halsizlik")
-st.session_state.categorical_inputs["ishal"] = col1.checkbox("İshal", value=st.session_state.categorical_inputs["ishal"], key="ishal")
-st.session_state.categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık", value=st.session_state.categorical_inputs["istahsizlik"], key="istahsizlik")
-st.session_state.categorical_inputs["kusma"] = col2.checkbox("Kusma", value=st.session_state.categorical_inputs["kusma"], key="kusma")
-st.session_state.categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama", value=st.session_state.categorical_inputs["zayiflama"], key="zayiflama")
+st.session_state.categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik", value=False, key="halsizlik")
+st.session_state.categorical_inputs["ishal"] = col1.checkbox("İshal", value=False, key="ishal")
+st.session_state.categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık", value=False, key="istahsizlik")
+st.session_state.categorical_inputs["kusma"] = col2.checkbox("Kusma", value=False, key="kusma")
+st.session_state.categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama", value=False, key="zayiflama")
 animal_type = col4.radio("Hayvan Türü", options=["Kedi", "Köpek"],
                            index=0 if st.session_state.categorical_inputs["AnimalType_kedi"] == 1 else 1,
                            key="animal_type")
@@ -108,6 +108,14 @@ if st.button("Tahmin Et"):
 # --------------------------
 if st.button("Temizle"):
     # Tüm session_state anahtarlarını temizleyelim
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
+    st.session_state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
+    st.session_state.categorical_inputs = {
+        "halsizlik": False,
+        "ishal": False,
+        "istahsizlik": False,
+        "kusma": False,
+        "zayiflama": False,
+        "AnimalType_kedi": 0,
+        "AnimalType_kopek": 0,
+    }
     st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
