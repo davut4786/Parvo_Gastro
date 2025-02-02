@@ -3,9 +3,13 @@ import pickle
 import pandas as pd
 
 # Modeli yükle
-model_path = "gastroparvo_model.pkl"
-with open(model_path, "rb") as file:
-    model = pickle.load(file)
+# Scaler'ı yükleyin (scaler.pkl dosyasından)
+with open("scaler.pkl", "rb") as f:
+    scaler = pickle.load(f)
+
+# Modeli yükleyin (gastroparvo_model.pkl dosyasından)
+with open("gastroparvo_model.pkl", "rb") as f:
+    model = pickle.load(f)
 
 # Streamlit başlığı ortalı
 st.markdown("<h1 style='text-align: center;'>Hastalık Tahmin Uygulaması</h1>", unsafe_allow_html=True)
