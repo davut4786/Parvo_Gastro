@@ -29,17 +29,20 @@ for i, col in enumerate(columns):
     else:
         numeric_inputs[col] = col4.number_input(f"{col}", value=None, format="%.2f")
 
-# Kategorik ve bool değişkenleri alma
+# Klinik Bulgular ve Hayvan Türü için kategorik veriler
 st.markdown("**Klinik Bulgular ve Hayvan Türü**")
-categorical_inputs = {
-    "halsizlik": st.checkbox("Halsizlik"),
-    "ishal": st.checkbox("İshal"),
-    "istahsizlik": st.checkbox("İştahsızlık"),
-    "kusma": st.checkbox("Kusma"),
-    "zayiflama": st.checkbox("Zayıflama"),
-    "AnimalType_kedi": st.checkbox("Kedi"),
-    "AnimalType_kopek": st.checkbox("Köpek"),
-}
+categorical_inputs = {}
+
+# 4 sütunlu düzenleme ile checkbox'lar
+col1, col2, col3, col4 = st.columns(4)
+
+categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik")
+categorical_inputs["ishal"] = col1.checkbox("İshal")
+categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık")
+categorical_inputs["kusma"] = col2.checkbox("Kusma")
+categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama")
+categorical_inputs["AnimalType_kedi"] = col3.checkbox("Kedi")
+categorical_inputs["AnimalType_kopek"] = col4.checkbox("Köpek")
 
 # Tahmin butonu
 if st.button("Tahmin Et"):
