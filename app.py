@@ -1,7 +1,7 @@
 import streamlit as st
 import pickle
 import pandas as pd
-
+from streamlit import session_state as state
 
 # --------------------------
 # Dosyaları Yükle
@@ -32,11 +32,11 @@ columns = [
 ]
 
 # Session state başlangıç değerleri
-if 'numeric_inputs' not in st.session_state:
-    st.session_state.numeric_inputs = {col: None for col in columns}
+if 'numeric_inputs' not in state:
+    state.numeric_inputs = {col: None for col in columns}
 
-if 'categorical_inputs' not in st.session_state:
-    st.session_state.categorical_inputs = {
+if 'categorical_inputs' not in state:
+    state.categorical_inputs = {
         "halsizlik": False,
         "ishal": False,
         "istahsizlik": False,
@@ -55,40 +55,40 @@ for i, col in enumerate(columns):
     # Her sütuna yerleştirirken, benzersiz key kullanıyoruz.
     key_val = f"{col}_input"
     if i % 6 == 0:
-        st.session_state.numeric_inputs[col] = col1.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col1.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
     elif i % 6 == 1:
-        st.session_state.numeric_inputs[col] = col2.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col2.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
     elif i % 6 == 2:
-        st.session_state.numeric_inputs[col] = col3.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col3.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
     elif i % 6 == 3:
-        st.session_state.numeric_inputs[col] = col4.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col4.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
     elif i % 6 == 4:
-        st.session_state.numeric_inputs[col] = col5.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col5.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
     else:
-        st.session_state.numeric_inputs[col] = col6.number_input(col, value=None, format="%.2f", key=key_val)
+        state.numeric_inputs[col] = col6.number_input(col, value=state.numeric_inputs[col], format="%.2f", key=key_val)
 
 # --------------------------
 # Kategorik Girdiler
 # --------------------------
 st.markdown("**Klinik Bulgular ve Hayvan Türü**")
 col1, col2, col3, col4, col5, col6 = st.columns(6)
-st.session_state.categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik", value=False, key="halsizlik")
-st.session_state.categorical_inputs["ishal"] = col1.checkbox("İshal", value=False, key="ishal")
-st.session_state.categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık", value=False, key="istahsizlik")
-st.session_state.categorical_inputs["kusma"] = col2.checkbox("Kusma", value=False, key="kusma")
-st.session_state.categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama", value=False, key="zayiflama")
+state.categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik", value=state.categorical_inputs["halsizlik"], key="halsizlik")
+state.categorical_inputs["ishal"] = col1.checkbox("İshal", value=state.categorical_inputs["ishal"], key="ishal")
+state.categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık", value=state.categorical_inputs["istahsizlik"], key="istahsizlik")
+state.categorical_inputs["kusma"] = col2.checkbox("Kusma", value=state.categorical_inputs["kusma"], key="kusma")
+state.categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama", value=state.categorical_inputs["zayiflama"], key="zayiflama")
 animal_type = col4.radio("Hayvan Türü", options=["Kedi", "Köpek"],
-                           index=0 if st.session_state.categorical_inputs["AnimalType_kedi"] == 1 else 1,
+                           index=0 if state.categorical_inputs["AnimalType_kedi"] == 1 else 1,
                            key="animal_type")
-st.session_state.categorical_inputs["AnimalType_kedi"] = 1 if animal_type == "Kedi" else 0
-st.session_state.categorical_inputs["AnimalType_kopek"] = 1 if animal_type == "Köpek" else 0
+state.categorical_inputs["AnimalType_kedi"] = 1 if animal_type == "Kedi" else 0
+state.categorical_inputs["AnimalType_kopek"] = 1 if animal_type == "Köpek" else 0
 
 # --------------------------
 # Tahmin Butonu ve İşlemleri
 # --------------------------
 if st.button("Tahmin Et"):
     # Girdileri birleştirip DataFrame oluşturun
-    input_data = pd.DataFrame([{**st.session_state.numeric_inputs, **st.session_state.categorical_inputs}])
+    input_data = pd.DataFrame([{**state.numeric_inputs, **state.categorical_inputs}])
     
     # Eksik veri kontrolü
     missing_columns = input_data.columns[input_data.isnull().any()].tolist()
@@ -109,8 +109,8 @@ if st.button("Tahmin Et"):
 # --------------------------
 if st.button("Temizle"):
     # Tüm session_state anahtarlarını temizleyelim
-    st.session_state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
-    st.session_state.categorical_inputs = {
+    state.numeric_inputs = {col: None for col in columns}  # Sayısal girişler boş olacak
+    state.categorical_inputs = {
         "halsizlik": False,
         "ishal": False,
         "istahsizlik": False,
@@ -120,3 +120,4 @@ if st.button("Temizle"):
         "AnimalType_kopek": 0,
     }
     st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
+    st.experimental_rerun()
