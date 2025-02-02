@@ -2,18 +2,12 @@ import streamlit as st
 import pickle
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 
 # === MODELLERİ YÜKLE ===
 # Eğitim sırasında kaydedilen modeli yükle
-model_path = "gastroparvo_model.pkl"
+model_path = "parvogastro_model.pkl"
 with open(model_path, "rb") as file:
     model = pickle.load(file)
-
-# MinMaxScaler'ı yükle (eğer kaydettiysen)
-scaler_path = "scaler.pkl"
-with open(scaler_path, "rb") as file:
-    scaler = pickle.load(file)
 
 # === STREAMLIT ARAYÜZÜ ===
 st.markdown("<h1 style='text-align: center;'>Hastalık Durumu Tahmin Uygulaması</h1>", unsafe_allow_html=True)
@@ -62,11 +56,8 @@ if st.button("Tahmin Et"):
                               columns=["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa", "ctHb", "WBC",
                                        "halsizlik", "ishal", "istahsizlik", "kusma", "zayiflama"])
     
-    # **Normalizasyon uygula**
-    user_input_scaled = scaler.transform(user_input)
-    
     # **Tahmin yap**
-    prediction = model.predict(user_input_scaled)[0]
+    prediction = model.predict(user_input)[0]
     
     # **Sonucu kullanıcıya göster**
     result_text = "Gastro Enteritis" if prediction == 0 else "Parvoviral Enteritis"
