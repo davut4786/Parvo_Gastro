@@ -71,3 +71,12 @@ if st.button("Tahmin Et"):
             st.markdown(f"<h2 style='text-align: center;'>Tahmin Sonucu: {result_text}</h2>", unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Bir hata oluştu: {str(e)}")
+
+# Temizle butonu
+if st.button("Temizle"):
+    # Tüm girişleri sıfırla
+    for key in numeric_inputs:
+        numeric_inputs[key] = None
+    for key in categorical_inputs:
+        categorical_inputs[key] = False
+    st.experimental_rerun()
