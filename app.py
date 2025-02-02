@@ -3,20 +3,6 @@ import pickle
 import pandas as pd
 
 # --------------------------
-# Özel Tema Ayarları - İlk Satırda
-# --------------------------
-st.set_page_config(
-    page_title="Hastalık Tahmin Uygulaması",
-    page_icon="🧑‍⚕️",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-    theme={
-        "base": "light",
-        "backgroundColor": "#a7e7f9"
-    }
-)
-
-# --------------------------
 # Dosyaları Yükle
 # --------------------------
 
