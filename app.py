@@ -15,46 +15,57 @@ st.markdown("**Hasta Bulguları ve Laboratuvar Sonuçları**")
 columns = ["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa", "ctHb", "FCOHb", "FMetHb", "FO2Hb", "GRAN", "GRAN_A", "LYM", "LYM_A", "MON", "MON_A", "Hb", "HCT", "MCH", "MCHC", "MCV", "MPV", "PLT", "RBC", "RDW", "WBC"]
 
 # Sayısal değişkenleri alma
-numeric_inputs = {}
+if 'numeric_inputs' not in st.session_state:
+    st.session_state.numeric_inputs = {col: None for col in columns}
+
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
 # Sayısal verileri her sütuna yerleştir
 for i, col in enumerate(columns):
     if i % 6 == 0:
-        numeric_inputs[col] = col1.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col1.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
     elif i % 6 == 1:
-        numeric_inputs[col] = col2.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col2.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
     elif i % 6 == 2:
-        numeric_inputs[col] = col3.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col3.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
     elif i % 6 == 3:
-        numeric_inputs[col] = col4.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col4.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
     elif i % 6 == 4:
-        numeric_inputs[col] = col5.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col5.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
     else:
-        numeric_inputs[col] = col6.number_input(f"{col}", value=None, format="%.2f")
+        st.session_state.numeric_inputs[col] = col6.number_input(f"{col}", value=st.session_state.numeric_inputs[col], format="%.2f")
 
 # Klinik Bulgular ve Hayvan Türü için kategorik veriler
 st.markdown("**Klinik Bulgular ve Hayvan Türü**")
-categorical_inputs = {}
+if 'categorical_inputs' not in st.session_state:
+    st.session_state.categorical_inputs = {
+        "halsizlik": False,
+        "ishal": False,
+        "istahsizlik": False,
+        "kusma": False,
+        "zayiflama": False,
+        "AnimalType_kedi": 0,
+        "AnimalType_kopek": 0,
+    }
 
 # 6 sütunlu düzenleme ile checkbox'lar
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
-categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik")
-categorical_inputs["ishal"] = col1.checkbox("İshal")
-categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık")
-categorical_inputs["kusma"] = col2.checkbox("Kusma")
-categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama")
+st.session_state.categorical_inputs["halsizlik"] = col1.checkbox("Halsizlik", value=st.session_state.categorical_inputs["halsizlik"])
+st.session_state.categorical_inputs["ishal"] = col1.checkbox("İshal", value=st.session_state.categorical_inputs["ishal"])
+st.session_state.categorical_inputs["istahsizlik"] = col2.checkbox("İştahsızlık", value=st.session_state.categorical_inputs["istahsizlik"])
+st.session_state.categorical_inputs["kusma"] = col2.checkbox("Kusma", value=st.session_state.categorical_inputs["kusma"])
+st.session_state.categorical_inputs["zayiflama"] = col3.checkbox("Zayıflama", value=st.session_state.categorical_inputs["zayiflama"])
 
 # Hayvan türü seçimi (ikili sütun: Kedi/Köpek)
-animal_type = col4.radio("Hayvan Türü", ("Kedi", "Köpek"))
-categorical_inputs["AnimalType_kedi"] = 1 if animal_type == "Kedi" else 0
-categorical_inputs["AnimalType_kopek"] = 1 if animal_type == "Köpek" else 0
+animal_type = col4.radio("Hayvan Türü", ("Kedi", "Köpek"), index=0 if st.session_state.categorical_inputs["AnimalType_kedi"] == 1 else 1)
+st.session_state.categorical_inputs["AnimalType_kedi"] = 1 if animal_type == "Kedi" else 0
+st.session_state.categorical_inputs["AnimalType_kopek"] = 1 if animal_type == "Köpek" else 0
 
 # Tahmin butonu
 if st.button("Tahmin Et"):
     # Model giriş verisini hazırlama
-    input_data = pd.DataFrame([{**numeric_inputs, **categorical_inputs}])
+    input_data = pd.DataFrame([{**st.session_state.numeric_inputs, **st.session_state.categorical_inputs}])
 
     # Eksik veri kontrolü
     missing_columns = input_data.columns[input_data.isnull().any()].tolist()
@@ -75,8 +86,8 @@ if st.button("Tahmin Et"):
 # Temizle butonu
 if st.button("Temizle"):
     # Tüm girişleri sıfırla
-    for key in numeric_inputs:
-        numeric_inputs[key] = None
-    for key in categorical_inputs:
-        categorical_inputs[key] = False
+    for key in st.session_state.numeric_inputs:
+        st.session_state.numeric_inputs[key] = None
+    for key in st.session_state.categorical_inputs:
+        st.session_state.categorical_inputs[key] = False
     st.experimental_rerun()
