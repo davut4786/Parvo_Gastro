@@ -4,6 +4,15 @@ import pandas as pd
 from streamlit import session_state as state
 
 # --------------------------
+# Eğitimde kullandığınız sayısal sütunlar (float64 türündeki sütunlar)
+columns = [
+    "cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa",
+    "ctHb", "FCOHb", "FMetHb", "FO2Hb", "GRAN", "GRAN_A", "LYM", "LYM_A",
+    "MON", "MON_A", "Hb", "HCT", "MCH", "MCHC", "MCV", "MPV", "PLT", "RBC",
+    "RDW", "WBC"
+]
+
+# --------------------------
 # Dosyaları Yükle
 # --------------------------
 
@@ -39,17 +48,8 @@ if st.button("Temizle"):
     st.experimental_rerun()
 
 # --------------------------
-# Girdi Alanları İçin Ayarlar
-# --------------------------
-# Eğitimde kullandığınız sayısal sütunlar (float64 türündeki sütunlar)
-columns = [
-    "cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa",
-    "ctHb", "FCOHb", "FMetHb", "FO2Hb", "GRAN", "GRAN_A", "LYM", "LYM_A",
-    "MON", "MON_A", "Hb", "HCT", "MCH", "MCHC", "MCV", "MPV", "PLT", "RBC",
-    "RDW", "WBC"
-]
-
 # Session state başlangıç değerleri
+# --------------------------
 if 'numeric_inputs' not in state:
     state.numeric_inputs = {col: None for col in columns}
 
