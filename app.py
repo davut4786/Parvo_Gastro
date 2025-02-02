@@ -118,4 +118,9 @@ if st.button("Temizle"):
         "AnimalType_kedi": 0,
         "AnimalType_kopek": 0,
     }
+    
+    # Formu yeniden render etmek için
+    st.experimental_rerun()  # Yeniden çalıştırma ile form sıfırlanacak
+
     st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
+
