@@ -3,6 +3,20 @@ import pickle
 import pandas as pd
 
 # --------------------------
+# Özel Tema Ayarları - İlk Satırda
+# --------------------------
+st.set_page_config(
+    page_title="Hastalık Tahmin Uygulaması",
+    page_icon="🧑‍⚕️",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+    theme={
+        "base": "light",
+        "backgroundColor": "#a7e7f9"
+    }
+)
+
+# --------------------------
 # Dosyaları Yükle
 # --------------------------
 
@@ -118,9 +132,4 @@ if st.button("Temizle"):
         "AnimalType_kedi": 0,
         "AnimalType_kopek": 0,
     }
-    
-    # Formu yeniden render etmek için
-    st.experimental_rerun()  # Yeniden çalıştırma ile form sıfırlanacak
-
     st.info("Form temizlendi. Lütfen tekrar veri giriniz.")
-
