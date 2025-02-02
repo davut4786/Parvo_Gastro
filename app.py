@@ -16,10 +16,21 @@ columns = ["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "
 
 # Sayısal değişkenleri alma
 numeric_inputs = {}
-for col in columns:
-    numeric_inputs[col] = st.number_input(f"{col}", value=None, format="%.2f")
+col1, col2, col3, col4 = st.columns(4)  # 4 sütun oluşturuluyor
+
+# Sayısal verileri her sütuna yerleştir
+for i, col in enumerate(columns):
+    if i % 4 == 0:
+        numeric_inputs[col] = col1.number_input(f"{col}", value=None, format="%.2f")
+    elif i % 4 == 1:
+        numeric_inputs[col] = col2.number_input(f"{col}", value=None, format="%.2f")
+    elif i % 4 == 2:
+        numeric_inputs[col] = col3.number_input(f"{col}", value=None, format="%.2f")
+    else:
+        numeric_inputs[col] = col4.number_input(f"{col}", value=None, format="%.2f")
 
 # Kategorik ve bool değişkenleri alma
+st.markdown("**Klinik Bulgular ve Hayvan Türü**")
 categorical_inputs = {
     "halsizlik": st.checkbox("Halsizlik"),
     "ishal": st.checkbox("İshal"),
