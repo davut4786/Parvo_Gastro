@@ -1,46 +1,73 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
-# Modeli yükle
+# === MODELLERİ YÜKLE ===
+# Eğitim sırasında kaydedilen modeli yükle
 model_path = "gastroparvo_model.pkl"
 with open(model_path, "rb") as file:
     model = pickle.load(file)
 
-# Streamlit başlığı ortalı
-st.markdown("<h1 style='text-align: center;'>Hastalık Tahmin Uygulaması</h1>", unsafe_allow_html=True)
+# MinMaxScaler'ı yükle (eğer kaydettiysen)
+scaler_path = "scaler.pkl"
+with open(scaler_path, "rb") as file:
+    scaler = pickle.load(file)
 
-# Kullanıcıdan girdileri alma
-st.markdown("**Hasta Bulguları ve Laboratuvar Sonuçları**")
-columns = ["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa", "ctHb", "FCOHb", "FMetHb", "FO2Hb", "GRAN", "GRAN_A", "LYM", "LYM_A", "MON", "MON_A", "Hb", "HCT", "MCH", "MCHC", "MCV", "MPV", "PLT", "RBC", "RDW", "WBC"]
+# === STREAMLIT ARAYÜZÜ ===
+st.markdown("<h1 style='text-align: center;'>Hastalık Durumu Tahmin Uygulaması</h1>", unsafe_allow_html=True)
 
-# Sayısal değişkenleri alma
-numeric_inputs = {}
-for col in columns:
-    numeric_inputs[col] = st.number_input(f"{col}", value=None, format="%.2f")
+# === KULLANICI GİRDİLERİ ===
+st.markdown("**Kan Parametreleri**")
+col1, col2, col3, col4 = st.columns(4)  # 4 sütun olacak şekilde düzenleme
+with col1:
+    cBasebC = st.number_input("cBasebC", value=0.0)
+    pCO2 = st.number_input("pCO2", value=0.0)
+with col2:
+    pH = st.number_input("pH", value=0.0)
+    pO2 = st.number_input("pO2", value=0.0)
+with col3:
+    cCa = st.number_input("cCa", value=0.0)
+    cCl = st.number_input("cCl", value=0.0)
+with col4:
+    cGlu = st.number_input("cGlu", value=0.0)
+    cK = st.number_input("cK", value=0.0)
 
-# Kategorik ve bool değişkenleri alma
-categorical_inputs = {
-    "halsizlik": st.checkbox("Halsizlik"),
-    "ishal": st.checkbox("İshal"),
-    "istahsizlik": st.checkbox("İştahsızlık"),
-    "kusma": st.checkbox("Kusma"),
-    "zayiflama": st.checkbox("Zayıflama"),
-    "AnimalType_kedi": st.checkbox("Kedi"),
-    "AnimalType_kopek": st.checkbox("Köpek"),
-}
+# === İKİNCİ KISIM (diğer kan parametreleri) ===
+col5, col6, col7, col8 = st.columns(4)
+with col5:
+    cLac = st.number_input("cLac", value=0.0)
+    cNa = st.number_input("cNa", value=0.0)
+with col6:
+    ctHb = st.number_input("ctHb", value=0.0)
+    WBC = st.number_input("WBC", value=0.0)
 
-# Tahmin butonu
+# === SEMPTOMLAR ===
+st.markdown("**Belirtiler**")
+col9, col10 = st.columns(2)
+with col9:
+    halsizlik = st.checkbox("Halsizlik")
+    ishal = st.checkbox("İshal")
+    istahsizlik = st.checkbox("İştahsızlık")
+with col10:
+    kusma = st.checkbox("Kusma")
+    zayiflama = st.checkbox("Zayıflama")
+
+# === TAHMİN BUTONU ===
 if st.button("Tahmin Et"):
-    # Model giriş verisini hazırlama
-    input_data = pd.DataFrame([{**numeric_inputs, **categorical_inputs}])
+    # Kullanıcının girdilerini bir DataFrame'e çevir
+    user_input = pd.DataFrame([[cBasebC, pCO2, pH, pO2, cCa, cCl, cGlu, cK, cLac, cNa, ctHb, WBC,
+                                int(halsizlik), int(ishal), int(istahsizlik), int(kusma), int(zayiflama)]],
+                              columns=["cBasebC", "pCO2", "pH", "pO2", "cCa", "cCl", "cGlu", "cK", "cLac", "cNa", "ctHb", "WBC",
+                                       "halsizlik", "ishal", "istahsizlik", "kusma", "zayiflama"])
     
-    # Eksik veri kontrolü
-    if input_data.isnull().values.any():
-        st.warning("Lütfen tüm alanları doldurun!")
-    else:
-        prediction = model.predict(input_data)[0]
-        
-        # Sonucu kullanıcı dostu formatta gösterme
-        result_text = "Parvoviral Enteritis" if prediction == 1 else "Gastro Enteritis"
-        st.markdown(f"<h2 style='text-align: center;'>Tahmin Sonucu: {result_text}</h2>", unsafe_allow_html=True)
+    # **Normalizasyon uygula**
+    user_input_scaled = scaler.transform(user_input)
+    
+    # **Tahmin yap**
+    prediction = model.predict(user_input_scaled)[0]
+    
+    # **Sonucu kullanıcıya göster**
+    result_text = "Gastro Enteritis" if prediction == 0 else "Parvoviral Enteritis"
+    st.markdown(f"<h2 style='text-align: center;'>Tahmin Sonucu: {result_text}</h2>", unsafe_allow_html=True)
